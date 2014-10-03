@@ -1,0 +1,10 @@
+.idea/.name
+.idea/workspace.xml
+bower_components/angular/.bower.json
+bower_components/angular/angular-csp.css
+bower_components/angular/angular.min.js
+bower_components/angular/angular.min.js.gzip
+bower_components/angular/angular.min.js.map
+bower_components/angular/bower.json
+bower_components/angular/README.md
+js/angular/angular.js
