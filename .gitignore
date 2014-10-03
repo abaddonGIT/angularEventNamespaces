@@ -8,3 +8,14 @@ bower_components/angular/angular.min.js.map
 bower_components/angular/bower.json
 bower_components/angular/README.md
 js/angular/angular.js
+.idea/deployment.xml
+.idea/event.iml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/jsLinters/jslint.xml
+js/angular/.bower.json
+js/angular/angular-csp.css
+js/angular/angular.min.js.gzip
+js/angular/angular.min.js.map
+js/angular/bower.json
+js/angular/README.md
