@@ -15,12 +15,17 @@
                         console.log('test2 handler');
                     };
 
-                an.forEach(buttons, function (v, k) {
-                    $anEvent.on(v, 'mouseover', function (event) {
-                        console.log(event.type + '-global-' + k);
-                    });
-                    $anEvent.on(v, 'click:test' + k, test);
-                    $anEvent.on(v, 'click', test2);
+//                an.forEach(buttons, function (v, k) {
+////                    $anEvent.on(v, 'mouseover', function (event) {
+////                        console.log(event.type + '-global-' + k);
+////                    });
+//                    $anEvent.on(v, 'click:test' + k, test);
+//                   // $anEvent.on(v, 'click', test2);
+//                });
+                $anEvent.on(buttons[0], 'testEvent', function (event) {
+                    console.log('triggerok!');
+                    console.log(event);
+                    //event.stopPropagation();
                 });
 
                 $anEvent.on(offBut, 'click', function () {
@@ -30,7 +35,7 @@
                 });
 
                 $anEvent.on(w, 'resize', function () {
-                    console.log("размер сменили!");
+                    $anEvent.trigger(buttons[0], 'testEvent');
                 });
                 //console.log();
             }, 0);
