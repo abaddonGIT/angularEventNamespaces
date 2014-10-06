@@ -7,6 +7,9 @@
     an.module("myApp", ['angularEvent']).
         controller("baseController", ['$scope', '$anEvent', '$timeout', function ($scope, $anEvent, $timeout) {
             //timeout for correct testing
+            var testEvent = function () {
+                console.warn("i am here!");
+            };
             $timeout(function () {
                 var but = d.querySelector("button.click"),
                     removeAll = d.querySelector("button.remove-all"),
@@ -37,9 +40,9 @@
                 $anEvent.on(select, 'change', function (e) {
                     alert(this.value);
                 });
-
+                $anEvent.on(area, 'testEvent', testEvent);
                 $anEvent.on(w, 'resize', function () {
-                    $anEvent.trigger(buttons[0], 'testEvent');
+                    $anEvent.trigger(area, 'testEvent');
                 });
             }, 0);
         }]);
