@@ -16,16 +16,13 @@
                 this.unicid = this.counter;
                 /*Регистрирует событие на элементе*/
                 this.on = function (elem, type, fn) {
-                    if (!fn || !type || !elem || (typeof elem !== "object")) {
+                    var types = (type || "").match(/\S+/g) || [ "" ], data = this._getMark(elem);//Разбераем строку с именами событий
+                    if (!fn || !types.length || !elem || (typeof elem !== "object")) {
                         return false;
                     }
-                    var data = this._getMark(elem), typeObj = type.split(':'), namespace;
-                    type = typeObj[0];//Тип события
-                    namespace = typeObj[1] || 'global';//Пространство имен
-                    this._namespaces('handlers.' + type + '.' + namespace, data);
-                    fn.guid = fn.guid || this.nextFnId++;//Маркируем оригинальную ф-ю
-                    data.handlers[type][namespace].push(fn);
-
+                    if (!elem.addEventListener) {
+                        return false;
+                    }
                     if (!data.dispatcher) {
                         data.disabled = false;
                         data.dispatcher = function (event) {
@@ -44,54 +41,63 @@
                             });
                         };
                     }
-                    if (data.handlers[type][namespace].length === 1) {//Если есть хоть одно такое событие, то регистрируем наш обработчик
-                        if (elem.addEventListener) {
+                    var typesLn = types.length;
+                    while (typesLn--) {
+                        var type = types[typesLn], typeObj = type.split(':'), namespace;
+                        type = typeObj[0];//Тип события
+                        namespace = typeObj[1] || 'global';//Пространство имен
+                        that._namespaces('handlers.' + type + '.' + namespace, data);
+                        fn.guid = fn.guid || this.nextFnId++;//Маркируем оригинальную ф-ю
+                        data.handlers[type][namespace].push(fn);
+
+                        if (data.handlers[type][namespace].length === 1) {//Если есть хоть одно такое событие, то регистрируем наш обработчик
                             elem.addEventListener(type, data.dispatcher, false);
-                        } else {
-                            return false;
                         }
                     }
                 };
                 /*Удаляет обработчик с элемента*/
                 this.off = function (elem, type, fn) {
-                    if (!type || !elem || (typeof elem !== "object")) {
+                    var types = (type || "").match(/\S+/g) || [ "" ], data = this._getMark(elem);//Разбераем строку с именами событий
+                    if (!types.length || !elem || (typeof elem !== "object")) {
                         return false;
                     }
-                    var typeObj = type.split(':'), namespace, data, handlers;
-                    namespace = typeObj[1] || 'global';
-                    type = typeObj[0];
-                    //получаем данные по элементу из кэша
-                    data = this._getMark(elem);
-
+                    if (!elem.removeEventListener) {
+                        return false;
+                    }
                     if (!data.handlers) {
                         return;
                     }
-                    if (!data.handlers[type]) {
-                        return;
-                    }
-                    handlers = data.handlers[type][namespace];
-                    if (handlers) {
-                        //Если передан конкретный обработчик, то удаляется именно он
-                        if (fn) {
-                            if (fn.guid) {//если его нет, то нет смысла гонять массив с обработчиками
-                                an.forEach(handlers, function (v, k) {
-                                    if (v.guid === fn.guid) {
-                                        handlers.splice(k--, 1);
+                    var typesLn = types.length;
+                    while (typesLn--) {
+                        var type = types[typesLn], typeObj = type.split(':'), namespace, data, handlers;
+                        namespace = typeObj[1] || 'global';
+                        type = typeObj[0];
+                        if (data.handlers[type]) {
+                            handlers = data.handlers[type][namespace];
+                            if (handlers) {
+                                //Если передан конкретный обработчик, то удаляется именно он
+                                if (fn) {
+                                    if (fn.guid) {//если его нет, то нет смысла гонять массив с обработчиками
+                                        an.forEach(handlers, function (v, k) {
+                                            if (v.guid === fn.guid) {
+                                                handlers.splice(k--, 1);
+                                            }
+                                        });
                                     }
-                                });
-                            }
-                            if (this._isEmpty(handlers)) {
-                                delete data.handlers[type][namespace];
-                            }
-                        } else {
-                            if (namespace === 'global') {
-                                delete data.handlers[type];
+                                    if (this._isEmpty(handlers)) {
+                                        delete data.handlers[type][namespace];
+                                    }
+                                } else {
+                                    if (namespace === 'global') {
+                                        delete data.handlers[type];
+                                    } else {
+                                        delete data.handlers[type][namespace];
+                                    }
+                                }
                             } else {
-                                delete data.handlers[type][namespace];
+                                delete data.handlers[type];
                             }
-                        }
-                        if (this._isEmpty(data.handlers[type])) {//Если нет глобальных событий стем же типом, то удаляем обработчик
-                            if (elem.removeEventListener) {
+                            if (this._isEmpty(data.handlers[type])) {//Если нет глобальных событий стем же типом, то удаляем обработчик
                                 elem.removeEventListener(type, data.dispatcher, false);
                             }
                         }
@@ -110,6 +116,7 @@
                         this._removeMark(elem);
                     }
                 };
+                /*Вызов события по требованию*/
                 this.trigger = function (elem, type) {
                     var data = this._getMark(elem), typeObj = [], namespace, event, handlers, ln, i = 0, parent = elem.parentNode || elem.ownerDocument;
                     if (typeof type === "string") {
@@ -247,6 +254,11 @@
                         event.which = ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
                     }
                     return event;
+                },
+                _parseEvent: function (eventsString) {
+                    eventsString = 'click mouseover:test2 mouseout:test1 myevent';
+                    var types = (eventsString || "").match(/\S+/g) || [ "" ];
+                    console.log(types);
                 }
             }
             return new Event();
