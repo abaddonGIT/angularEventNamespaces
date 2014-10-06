@@ -254,11 +254,6 @@
                         event.which = ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
                     }
                     return event;
-                },
-                _parseEvent: function (eventsString) {
-                    eventsString = 'click mouseover:test2 mouseout:test1 myevent';
-                    var types = (eventsString || "").match(/\S+/g) || [ "" ];
-                    console.log(types);
                 }
             }
             return new Event();
