@@ -1,15 +1,15 @@
 angularEventNamespaces
 ======================
 
-Позволяет регистрировать события на елементах с использованием пространст имен, без jQuery.
+Позволяет регистрировать события на елементах с использованием пространств имен, без jQuery.
 
 **[Демка](http://angular.demosite.pro/event/)**
 ###Установка:
     var app = angular.module('app', ['angularEvent']);
-###Регистрация событий:
+###Привязка событий:
 События регистрируются на элементе при помощи метода **on**. Метод принимает три аргумента:
 - Елемент на котором регистрируется событие (без обёртки jqLite)
-- Имя события. Если необходимо зарегистрировать событие в пространстве имен, то оно указывается через <b>:</b>.
+- Имя события. Если необходимо зарегистрировать событие в пространстве имен, то оно указывается так:
         
         click:namespace
 - Функция обработчик. которая будет вызвана по наступлению события
@@ -36,7 +36,7 @@ angularEventNamespaces
 
 ###Вызов событий по требованию:
 Вызов события осуществляется при помощи метода **trigger**;
-Метод принимает три два аргумента:
+Метод принимает два аргумента:
 - Елемент на котором было зарегистрированно событие (без обёртки jqLite)
 - Имя или объект события, которое необходимо вызвать.
         
@@ -45,4 +45,50 @@ angularEventNamespaces
         $anEvent.on(w, 'resize', function () {
             $anEvent.trigger(area, 'testEvent');
         });
-The module adds methods for registration of events with use of namespace in angular without jQuery
+
+angularEventNamespaces
+======================
+
+The module adds methods for registration of events with use of namespace in angular without jQuery.
+
+**[Demo](http://angular.demosite.pro/event/)**
+###installation:
+    var app = angular.module('app', ['angularEvent']);
+###Bind event:
+Method **on** bind events for element. It accepts three arguments:
+- Element to which bind events (not wrapper jqLite);
+- Event name. If the event has to be connected with an element through namespace, you write something like this:
+        
+        click:namespace
+- Handler function.
+        
+        var but = d.querySelector("button.click");
+        $anEvent.on(but, 'click', function (e) {
+            alert("click");
+        });
+        $anEvent.on(but, 'click:namespace', function (e) {
+            alert("click with namespace");
+        });
+
+###Unbind event:
+Method **off** unbind event for element. It accepts two or three arguments:
+- Element to which bind events (not wrapper jqLite);
+- Event name which should unbind from element. If namespace isn't specified when unbind all events this type;
+- Handler function. If is true when it will be removed. 
+        
+        //Removed all handlers for event which name click
+        $anEvent.off(but, 'click');
+        //Removed all handlers for event which name click in namespace
+        $anEvent.off(but, 'click:namespace');
+
+###Call of events on demand:
+Method **trigger** call of event on demand;
+It accepts two arguments:
+- Element to which bind events (not wrapper jqLite);
+- Event name or event object when should called.
+        
+        area = d.querySelector("div.mouse");
+        $anEvent.on(area, 'testEvent', testEvent);
+        $anEvent.on(w, 'resize', function () {
+            $anEvent.trigger(area, 'testEvent');
+        });
