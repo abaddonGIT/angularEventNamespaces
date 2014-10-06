@@ -16,7 +16,7 @@
                 this.unicid = this.counter;
                 /*Регистрирует событие на элементе*/
                 this.on = function (elem, type, fn) {
-                    if (!fn || !type || (typeof elem !== "object")) {
+                    if (!fn || !type || !elem || (typeof elem !== "object")) {
                         return false;
                     }
                     var data = this._getMark(elem), typeObj = type.split(':'), namespace;
@@ -54,7 +54,7 @@
                 };
                 /*Удаляет обработчик с элемента*/
                 this.off = function (elem, type, fn) {
-                    if (!type || (typeof elem !== "object")) {
+                    if (!type || !elem || (typeof elem !== "object")) {
                         return false;
                     }
                     var typeObj = type.split(':'), namespace, data, handlers;
@@ -134,7 +134,7 @@
                     //иммитация всплытия события
                     if (parent && !event.isPropagationStopped()) {
                         this.trigger(parent, event);
-                    } else if(!parent && !event.isDefaultPrevented()) {//Действие по умолчанию
+                    } else if (!parent && !event.isDefaultPrevented()) {//Действие по умолчанию
                         var targetData = this._getMark(event.target);
                         if (event.target[event.type]) {
                             targetData.disabled = true;

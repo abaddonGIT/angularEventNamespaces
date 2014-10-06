@@ -6,38 +6,41 @@
     "use strict";
     an.module("myApp", ['angularEvent']).
         controller("baseController", ['$scope', '$anEvent', '$timeout', function ($scope, $anEvent, $timeout) {
+            //timeout for correct testing
             $timeout(function () {
-                var buttons = d.querySelectorAll("button.on"), offBut = d.querySelector("button.off"),
-                    test = function () {
-                        console.log('test handler');
-                    },
-                    test2 = function () {
-                        console.log('test2 handler');
-                    };
-
-//                an.forEach(buttons, function (v, k) {
-////                    $anEvent.on(v, 'mouseover', function (event) {
-////                        console.log(event.type + '-global-' + k);
-////                    });
-//                    $anEvent.on(v, 'click:test' + k, test);
-//                   // $anEvent.on(v, 'click', test2);
-//                });
-                $anEvent.on(buttons[0], 'testEvent', function (event) {
-                    console.log('triggerok!');
-                    console.log(event);
-                    //event.stopPropagation();
+                var but = d.querySelector("button.click"),
+                    removeAll = d.querySelector("button.remove-all"),
+                    removeNamespace = d.querySelector("button.remove-namespace"),
+                    area = d.querySelector("div.mouse"),
+                    select = d.querySelector("select.change");
+                //Click event
+                $anEvent.on(but, 'click', function (e) {
+                    alert("click");
                 });
-
-                $anEvent.on(offBut, 'click', function () {
-                    an.forEach(buttons, function (v) {
-                        $anEvent.off(v, 'click');
-                    });
+                $anEvent.on(but, 'click:namespace', function (e) {
+                    alert("click with namespace");
+                });
+                $anEvent.on(removeAll, 'click', function (e) {
+                    $anEvent.off(but, 'click');
+                });
+                $anEvent.on(removeNamespace, 'click', function (e) {
+                    $anEvent.off(but, 'click:namespace');
+                });
+                //mouseover and mouseout
+                $anEvent.on(area, 'mouseover', function (e) {
+                    this.innerHTML = 'mouseover';
+                });
+                $anEvent.on(area, 'mouseout', function (e) {
+                    this.innerHTML = 'mouseout';
+                });
+                //change
+                $anEvent.on(select, 'change', function (e) {
+                    alert(this.value);
                 });
 
                 $anEvent.on(w, 'resize', function () {
                     $anEvent.trigger(buttons[0], 'testEvent');
                 });
-                //console.log();
             }, 0);
         }]);
 }(angular, document, window));
