@@ -69,7 +69,7 @@
                     }
                     var typesLn = types.length;
                     while (typesLn--) {
-                        var type = types[typesLn], typeObj = type.split(':'), namespace, data, handlers;
+                        var type = types[typesLn], typeObj = type.split(':'), namespace, handlers;
                         namespace = typeObj[1] || 'global';
                         type = typeObj[0];
                         if (data.handlers[type]) {
@@ -98,13 +98,10 @@
                                 delete data.handlers[type];
                             }
                             if (this._isEmpty(data.handlers[type])) {//Если нет глобальных событий стем же типом, то удаляем обработчик
+                                delete data.handlers[type];
                                 elem.removeEventListener(type, data.dispatcher, false);
                             }
                         }
-                    }
-                    //Проверка есть ли хоть один обработчик для данного типа события
-                    if (this._isEmpty(data.handlers[type])) {
-                        delete data.handlers[type];
                     }
                     //Если нет не одного обработчика
                     if (this._isEmpty(data.handlers)) {
